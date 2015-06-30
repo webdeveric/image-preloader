@@ -52,7 +52,6 @@ export default class Preloader
   } )
   {
     this.images = images;
-    this.options = options;
     this.timeout = timeout;
     this.beforeStart = start;
     this.onProgress = progress;
@@ -71,14 +70,14 @@ export default class Preloader
     });
   }
 
-  get progressMax()
+  get numImages()
   {
     return this.images.length;
   }
 
   get percentComplete()
   {
-    return 100/this.progressMax * this.counter * this.progressMax/100;
+    return 100/this.numImages * this.counter * this.numImages/100;
   }
 
   progress( img )
