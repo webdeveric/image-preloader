@@ -7,14 +7,14 @@ export function prefetch( url )
   head.appendChild( link );
 }
 
-export function loadImage( url )
+export function loadImage( url, timeout = 30000 )
 {
   return new Promise( function( resolve, reject ) {
     var img = new Image();
 
     var timer = setTimeout( function() {
-      reject( new Error( url + ' timed out') );
-    }, 30000 );
+      reject( new Error( url + ' timed out' ) );
+    }, timeout );
 
     img.onload = function() {
 
@@ -60,7 +60,7 @@ export default class Preloader
 
   load( url )
   {
-    return loadImage( url ).then( ( img ) => {
+    return loadImage( url, this.timeout ).then( ( img ) => {
       this.progress( img );
       return img;
     }, ( error ) => {
