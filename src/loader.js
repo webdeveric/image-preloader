@@ -21,7 +21,6 @@ export function loadImage( url )
       if ( this.naturalWidth > 0 && this.naturalHeight > 0 && this.complete ) {
 
         resolve( this );
-        console.log( this.src + ' loaded' );
 
       } else {
 
@@ -56,7 +55,7 @@ export default class Preloader
     this.beforeStart = start;
     this.onProgress = progress;
 
-    this.counter = 0;
+    this._completed = 0;
   }
 
   load( url )
@@ -70,19 +69,24 @@ export default class Preloader
     });
   }
 
-  get numImages()
+  get completed()
+  {
+    return this._completed;
+  }
+
+  get total()
   {
     return this.images.length;
   }
 
   get percentComplete()
   {
-    return 100/this.numImages * this.counter * this.numImages/100;
+    return this.completed === 0 ? 0 : this._completed / this.images.length;
   }
 
   progress( img )
   {
-    ++this.counter;
+    ++this._completed;
     this.onProgress( img, this );
   }
 
