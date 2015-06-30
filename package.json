@@ -2,7 +2,7 @@
   "name": "image-preloader",
   "version": "0.1.0",
   "description": "Preload images using promises",
-  "main": "src/loader.js",
+  "main": "dist/loader.js",
   "files": [
     "Gruntfile.js",
     "src/loader.js"
