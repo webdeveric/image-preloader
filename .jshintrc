@@ -1,0 +1,53 @@
+{
+  // strict
+  "bitwise":        false,
+  "camelcase":      true,
+  "curly":          false,
+  "eqeqeq":         false,
+  "es3":            false,
+  "forin":          false,
+  "freeze":         false,
+  "immed":          true,
+  "indent":         2,
+  "latedef":        true,
+  "newcap":         true,
+  "noarg":          true,
+  "noempty":        true,
+  "nonew":          false,
+  "plusplus":       false,
+  "quotmark":       "single",
+  "undef":          true,
+  "strict":         true,
+  "trailing":       true,
+  "unused":         true,
+  "expr":           true,
+
+  // relax
+  "boss":           true,
+  "eqnull":         true,
+  "supernew":       true,
+  "validthis":      true,
+
+  // environment
+  "browser":        true,
+
+  // globals
+  "globals": {
+    "process":      true,
+    "console":      true,
+    "afterEach":    false,
+    "beforeEach":   false,
+    "define":       false,
+    "describe":     false,
+    "expect":       false,
+    "it":           false,
+    "jasmine":      false,
+    "loadFixtures": false,
+    "module":       false,
+    "require":      false,
+    "runs":         false,
+    "spyOn":        false,
+    "spyOnEvent":   false,
+    "waits":        false
+  }
+}

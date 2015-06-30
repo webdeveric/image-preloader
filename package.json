@@ -1,0 +1,44 @@
+{
+  "name": "image-preloader",
+  "version": "0.1.0",
+  "description": "Preload images using promises",
+  "main": "src/loader.js",
+  "files": [
+    "Gruntfile.js",
+    "src/loader.js"
+  ],
+  "scripts": {
+    "postinstall": "grunt babel"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/webdeveric/image-preloader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/webdeveric/image-preloader/issues"
+  },
+  "keywords": [
+    "loader",
+    "image",
+    "preload",
+    "prefetch",
+    "promise"
+  ],
+  "author": {
+    "name": "Eric King",
+    "email": "eric@webdeveric.com",
+    "url": "http://webdeveric.com/"
+  },
+  "private": true,
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-babel": "^5.0.1",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-jscs": "^1.8.0",
+    "grunt-plato": "^1.2.1",
+    "grunt-shell": "^1.1.2",
+    "load-grunt-tasks": "~0.6.0",
+    "time-grunt": "~1.0.0"
+  }
+}
