@@ -8,7 +8,7 @@
     "src/loader.js"
   ],
   "scripts": {
-    "postinstall": "grunt babel"
+    "postinstall": "node_modules/.bin/grunt babel"
   },
   "repository": {
     "type": "git",
