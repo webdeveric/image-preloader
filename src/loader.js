@@ -61,7 +61,7 @@ export default class Preloader
 
   load( url )
   {
-    this.images[ this.images.length ] = loadImage( url ).then( ( img ) => {
+    return loadImage( url ).then( ( img ) => {
       this.progress( img );
       return img;
     }, ( error ) => {
