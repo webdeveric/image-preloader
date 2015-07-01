@@ -55,7 +55,7 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
   });
 }
 
-export default class Preloader
+export class Preloader
 {
   constructor( {
     images   = [],
@@ -127,3 +127,5 @@ export default class Preloader
     }
   }
 }
+
+export default Preloader;
