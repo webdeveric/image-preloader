@@ -1,21 +1,22 @@
 module.exports = function(grunt) {
   'use strict';
 
-  var openCommand = process.platform === 'linux' ? 'xdg-open' : 'open',
-      jsFiles = [ 'Gruntfile.js', 'src/**/*.js' ];
+  var openCommand = process.platform === 'linux' ? 'xdg-open' : 'open';
 
   var config = {
-    jshint: {
-      src: jsFiles,
+
+    eslint: {
       options: {
-        jshintrc: './.jshintrc'
-      }
+        configFile: './.eslintrc'
+      },
+      target: [ 'src/loader.js' ]
     },
 
     jscs: {
-      src: jsFiles,
+      src: [ 'src/loader.js' ],
       options: {
-        config: './.jscs.json'
+        config: './.jscs.json',
+        esnext: true
       }
     },
 
@@ -46,7 +47,7 @@ module.exports = function(grunt) {
 
     watch: {
       js: {
-        files: jsFiles,
+        files: [ 'src/loader.js' ],
         tasks: [ 'babel' ]
       }
     }
@@ -58,9 +59,9 @@ module.exports = function(grunt) {
 
   require('time-grunt')(grunt);
 
-  grunt.registerTask('lint', [ 'jshint', 'jscs' ] );
+  grunt.registerTask('lint', [ 'eslint', 'jscs' ] );
 
-  grunt.registerTask('js', [ /* 'lint', */ 'babel' ] );
+  grunt.registerTask('js', [ 'lint', 'babel' ] );
 
   grunt.registerTask('report', [ 'plato', 'shell:openreports' ] );
 
