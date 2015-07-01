@@ -1,3 +1,5 @@
+const DEFAULT_TIMEOUT = 30000;
+
 export function prefetch( url )
 {
   var head = document.getElementsByTagName('head')[0];
@@ -7,7 +9,7 @@ export function prefetch( url )
   head.appendChild( link );
 }
 
-export function loadImage( url, timeout = 30000 )
+export function loadImage( url, timeout = DEFAULT_TIMEOUT )
 {
   return new Promise( function( resolve, reject ) {
     var img = new Image();
@@ -45,7 +47,7 @@ export default class Preloader
 {
   constructor( {
     images =   [],
-    timeout =  30000,
+    timeout =  DEFAULT_TIMEOUT,
     start =    noop,
     progress = noop
   } )
