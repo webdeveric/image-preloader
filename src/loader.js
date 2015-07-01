@@ -1,22 +1,32 @@
 const DEFAULT_TIMEOUT = 30000;
 
+function noop(){}
+
 export function prefetch( url )
 {
-  var head = document.getElementsByTagName('head')[0];
-  var link = document.createElement('link');
-  link.setAttribute('rel', 'prefetch');
-  link.setAttribute('href', url );
-  head.appendChild( link );
+  let head = document.getElementsByTagName('head')[0];
+
+  if ( head ) {
+    let link = document.createElement('link');
+
+    link.setAttribute('rel', 'prefetch');
+    link.setAttribute('href', url );
+    head.appendChild( link );
+
+    return link;
+  }
+
+  return false;
 }
 
 export function loadImage( url, timeout = DEFAULT_TIMEOUT )
 {
   return new Promise( function( resolve, reject ) {
-    var img = new Image();
 
-    var timer = setTimeout( function() {
-      reject( new Error( url + ' timed out' ) );
-    }, timeout );
+    var img = new Image(),
+        timer = setTimeout( function() {
+          reject( new Error( url + ' timed out' ) );
+        }, timeout );
 
     img.onload = function() {
 
@@ -34,30 +44,32 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
     };
 
     img.onerror = function() {
+
       reject( new Error( this.src + ' could not be loaded' ) );
+
+      clearTimeout( timer );
+
     };
 
     img.src = url;
   });
 }
 
-function noop(){}
-
 export default class Preloader
 {
   constructor( {
-    images =   [],
-    timeout =  DEFAULT_TIMEOUT,
-    start =    noop,
+    images   = [],
+    timeout  = DEFAULT_TIMEOUT,
+    start    = noop,
     progress = noop
   } )
   {
-    this.images = images;
-    this.timeout = timeout;
+    this.images      = images;
+    this.timeout     = timeout;
     this.beforeStart = start;
-    this.onProgress = progress;
+    this.onProgress  = progress;
 
-    this._completed = 0;
+    this.numberCompleted = 0;
   }
 
   load( url )
@@ -73,7 +85,7 @@ export default class Preloader
 
   get completed()
   {
-    return this._completed;
+    return this.numberCompleted;
   }
 
   get total()
@@ -83,25 +95,35 @@ export default class Preloader
 
   get percentComplete()
   {
-    return this.completed === 0 ? 0 : this._completed / this.images.length;
+    return this.completed === 0 ? 0 : this.numberCompleted / this.images.length;
   }
 
   progress( img )
   {
-    ++this._completed;
+    ++this.numberCompleted;
     this.onProgress( img, this );
   }
 
   start()
   {
-    this.beforeStart( this );
+    try {
 
-    let promises = [];
+      if ( this.beforeStart( this ) === false ) {
+        return Promise.reject( new Error('Preloader start canceled by beforeStart') );
+      }
 
-    this.images.forEach( ( url ) => {
-      promises[ promises.length ] = this.load( url );
-    });
+      let promises = [];
 
-    return Promise.all( promises );
+      this.images.forEach( ( url ) => {
+        promises[ promises.length ] = this.load( url );
+      });
+
+      return Promise.all( promises );
+
+    } catch ( error ) {
+
+      return Promise.reject( error );
+
+    }
   }
 }
