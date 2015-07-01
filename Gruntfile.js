@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
   'use strict';
 
-  var openCommand = process.platform === 'linux' ? 'xdg-open' : 'open';
+  var jsFiles = [ 'src/loader.js' ];
 
   var config = {
 
@@ -9,61 +9,47 @@ module.exports = function(grunt) {
       options: {
         configFile: './.eslintrc'
       },
-      target: [ 'src/loader.js' ]
+      js: jsFiles
     },
 
     jscs: {
-      src: [ 'src/loader.js' ],
       options: {
-        config: './.jscs.json',
-        esnext: true
-      }
-    },
-
-    shell: {
-      openreports: {
-        command: openCommand + ' .plato/index.html'
-      }
-    },
-
-    plato: {
-      scrollwatcher: {
-        files: {
-          '.plato/': [ 'src/*.js' ]
-        }
-      }
+        config: './.jscsrc'
+      },
+      js: jsFiles
     },
 
     babel: {
       options: {
-        sourceMap: false
+        sourceMap: true
       },
-      dist: {
-        files: {
-          'dist/loader.js': 'src/loader.js'
-        }
+      js: {
+        files: [ {
+          expand: true,
+          cwd: './src/',
+          src: ['*.js'],
+          dest: './dist/'
+        } ]
       }
     },
 
     watch: {
       js: {
-        files: [ 'src/loader.js' ],
-        tasks: [ 'babel' ]
+        files: jsFiles,
+        tasks: [ 'js' ]
       }
     }
   };
 
   grunt.config.init( config );
 
-  require('load-grunt-tasks')(grunt);
-
   require('time-grunt')(grunt);
+
+  require('load-grunt-tasks')(grunt);
 
   grunt.registerTask('lint', [ 'eslint', 'jscs' ] );
 
   grunt.registerTask('js', [ 'lint', 'babel' ] );
-
-  grunt.registerTask('report', [ 'plato', 'shell:openreports' ] );
 
   grunt.registerTask('default', [ 'watch' ] );
 };

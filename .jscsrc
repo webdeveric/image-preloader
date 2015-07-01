@@ -1,4 +1,11 @@
 {
+  // "esprima": "babel-jscs", // global
+  "esprima": "./node_modules/babel-jscs", // local
+
+  "esnext": true,
+
+  "verbose": true,
+
   "requireCurlyBraces": [
     "else",
     "for",
@@ -25,10 +32,6 @@
 
   "requireSpacesInFunctionExpression": {
     "beforeOpeningCurlyBrace": true
-  },
-
-  "disallowSpacesInFunctionExpression": {
-    "beforeOpeningRoundBrace": true
   },
 
   "requireMultipleVarDecl": true,
