@@ -47,9 +47,20 @@ module.exports = function(grunt) {
 
   require('load-grunt-tasks')(grunt);
 
-  grunt.registerTask('lint', [ 'eslint', 'jscs' ] );
+  grunt.task.registerTask(
+    'lint',
+    'Run linting and coding style tasks',
+    [ 'eslint', 'jscs' ]
+  );
 
-  grunt.registerTask('js', [ 'lint', 'babel' ] );
+  grunt.task.registerTask(
+    'js',
+    'Validate JS then transpile ES6 to ES5',
+    [ 'lint', 'babel' ]
+  );
 
-  grunt.registerTask('default', [ 'watch' ] );
+  grunt.task.registerTask(
+    'default',
+    [ 'watch' ]
+  );
 };
