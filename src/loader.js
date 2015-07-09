@@ -4,13 +4,14 @@ function noop(){}
 
 export function prefetch( url )
 {
-  let head = document.getElementsByTagName('head')[0];
+  const head = document.getElementsByTagName('head')[0];
 
   if ( head ) {
-    let link = document.createElement('link');
+    const link = document.createElement('link');
 
     link.setAttribute('rel', 'prefetch');
     link.setAttribute('href', url );
+
     head.appendChild( link );
 
     return link;
@@ -23,20 +24,34 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
 {
   return new Promise( function( resolve, reject ) {
 
-    var img = new Image(),
-        timer = setTimeout( function() {
-          reject( new Error( url + ' timed out' ) );
-        }, timeout );
+    const img = new Image(),
+          timer = setTimeout( () => {
+
+            reject( {
+              loaded: false,
+              image: null,
+              error: new Error( `${url} timed out` )
+            } );
+
+          }, timeout );
 
     img.onload = function() {
 
       if ( this.naturalWidth > 0 && this.naturalHeight > 0 && this.complete ) {
 
-        resolve( this );
+        resolve( {
+          loaded: true,
+          image: this,
+          error: null
+        } );
 
       } else {
 
-        reject( new Error( this.src + ' loaded but is broken' ) );
+        reject( {
+          loaded: true,
+          image: this,
+          error: new Error( this.src + ' loaded but is broken' )
+        } );
 
       }
 
@@ -45,10 +60,13 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
 
     img.onerror = function() {
 
-      reject( new Error( this.src + ' could not be loaded' ) );
+      reject( {
+        loaded: false,
+        image: null,
+        error: new Error( this.src + ' could not be loaded' )
+      } );
 
       clearTimeout( timer );
-
     };
 
     img.src = url;
@@ -74,34 +92,16 @@ export class Preloader
 
   load( url )
   {
-    return loadImage( url, this.timeout ).then( ( img ) => {
-      this.progress( img );
-      return img;
-    }, ( error ) => {
-      this.progress( error );
-      return error;
-    });
+    const p = this.progress.bind( this );
+
+    return loadImage( url, this.timeout ).then( p, p );
   }
 
-  get completed()
-  {
-    return this.numberCompleted;
-  }
-
-  get total()
-  {
-    return this.images.length;
-  }
-
-  get percentComplete()
-  {
-    return this.completed === 0 ? 0 : this.numberCompleted / this.images.length;
-  }
-
-  progress( img )
+  progress( tick )
   {
     ++this.numberCompleted;
-    this.onProgress( img, this );
+    this.onProgress( tick, this );
+    return tick;
   }
 
   start()
@@ -111,6 +111,8 @@ export class Preloader
       if ( this.beforeStart( this ) === false ) {
         return Promise.reject( new Error('Preloader start canceled by beforeStart') );
       }
+
+      this.numberCompleted = 0;
 
       let promises = [];
 
@@ -125,6 +127,21 @@ export class Preloader
       return Promise.reject( error );
 
     }
+  }
+
+  get completed()
+  {
+    return this.numberCompleted;
+  }
+
+  get total()
+  {
+    return this.images.length;
+  }
+
+  get percentComplete()
+  {
+    return this.images.length === 0 ? 0 : this.numberCompleted / this.images.length;
   }
 }
 
