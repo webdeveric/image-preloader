@@ -76,16 +76,16 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
 export class Preloader
 {
   constructor( {
-    images   = [],
-    timeout  = DEFAULT_TIMEOUT,
-    start    = noop,
-    progress = noop
+    images      = [],
+    timeout     = DEFAULT_TIMEOUT,
+    beforeStart = noop,
+    onProgress  = noop
   } )
   {
     this.images      = images;
     this.timeout     = timeout;
-    this.beforeStart = start;
-    this.onProgress  = progress;
+    this.beforeStart = beforeStart;
+    this.onProgress  = onProgress;
 
     this.numberCompleted = 0;
   }
