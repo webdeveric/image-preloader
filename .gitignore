@@ -1,6 +1,7 @@
 .DS_Store
 Thumbs.db
 /dist
+/lib
 /node_modules
 /npm-debug.log
 .plato

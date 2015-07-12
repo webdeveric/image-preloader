@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
   'use strict';
 
-  var jsFiles = [ 'src/loader.js' ];
+  var jsFiles = [ 'src/ImagePreloader.js' ];
 
   var config = {
 
@@ -34,7 +34,7 @@ module.exports = function(grunt) {
           expand: true,
           cwd: './src/',
           src: ['*.js'],
-          dest: './dist/'
+          dest: './lib/'
         } ]
       }
     },
