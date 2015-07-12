@@ -80,6 +80,8 @@ This function is called every time an image completes or fails.
 The `tick` object contains three fields that let you know what happened.
 `preloader` is the `Preloader` instance, which you can use to check the percent complete.
 
+**tick object**
+
 ```javascript
 {
   loaded: Boolean,
@@ -87,6 +89,8 @@ The `tick` object contains three fields that let you know what happened.
   error: Error object or null
 }
 ```
+
+**Example: Setting progress bar**
 
 ```javascript
 var loader = new Preloader( {
