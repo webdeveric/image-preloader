@@ -11,8 +11,10 @@ Preloader uses [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScrip
 ```javascript
 var loader = new Preloader( { images: [] } );
 
-loader.start().then( function( images ) {
-  console.log( images );
+loader.start().then( function( results ) {
+  console.log( results );
+}, function( error ) {
+  console.log( error );
 });
 ```
 
@@ -55,7 +57,7 @@ var loader = new Preloader( {
 
 ### beforeStart
 
-beforeStart is optional and defaults to an empty function.
+`beforeStart` is optional and defaults to an empty function.
 
 ```javascript
 var loader = new Preloader( {
@@ -70,10 +72,13 @@ var loader = new Preloader( {
 
 ### onProgress
 
-This function is called every time an image completes or fails.
-The `tick` object contains three fields that let you know what happened.
+`onProgress` is optional and defaults to an empty function.
 
-onProgress is optional and defaults to an empty function.
+This function is called every time an image completes or fails.
+
+`onProgress` receives two arguments, `tick` and `preloader`.
+The `tick` object contains three fields that let you know what happened.
+`preloader` is the `Preloader` instance, which you can use to check the percent complete.
 
 ```javascript
 {
