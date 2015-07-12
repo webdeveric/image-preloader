@@ -50,7 +50,7 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
         reject( {
           loaded: true,
           image: this,
-          error: new Error( this.src + ' loaded but is broken' )
+          error: new Error( `${this.src} loaded but is broken` )
         } );
 
       }
@@ -63,7 +63,7 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
       reject( {
         loaded: false,
         image: null,
-        error: new Error( this.src + ' could not be loaded' )
+        error: new Error( `${this.src} could not be loaded` )
       } );
 
       clearTimeout( timer );
@@ -109,18 +109,24 @@ export class Preloader
     try {
 
       if ( this.beforeStart( this ) === false ) {
-        return Promise.reject( new Error('Preloader start canceled by beforeStart') );
+        throw new Error('Preloader start canceled by beforeStart');
       }
 
       this.numberCompleted = 0;
 
-      let promises = [];
+      if ( this.images && typeof this.images.forEach === 'function' ) {
 
-      this.images.forEach( ( url ) => {
-        promises[ promises.length ] = this.load( url );
-      });
+        let promises = [];
 
-      return Promise.all( promises );
+        this.images.forEach( ( url ) => {
+          promises[ promises.length ] = this.load( url );
+        });
+
+        return Promise.all( promises );
+
+      }
+
+      throw new Error('Unable to start. Does the images object have a forEach method?');
 
     } catch ( error ) {
 
@@ -134,14 +140,30 @@ export class Preloader
     return this.numberCompleted;
   }
 
+  get length()
+  {
+    if ( this.images ) {
+      let images = this.images;
+
+      if ( images.length !== void 0 ) {
+        return images.length;
+      } else if ( images.size !== void 0 ) {
+        // size is a property on Set objects.
+        return images.size;
+      }
+    }
+
+    return 0;
+  }
+
   get total()
   {
-    return this.images.length;
+    return this.length;
   }
 
   get percentComplete()
   {
-    return this.images.length === 0 ? 0 : this.numberCompleted / this.images.length;
+    return this.length === 0 ? 0 : this.numberCompleted / this.length;
   }
 }
 
