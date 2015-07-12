@@ -55,7 +55,7 @@ var loader = new Preloader( {
 
 ### beforeStart
 
-The default is an empty function.
+beforeStart is optional and defaults to an empty function.
 
 ```javascript
 var loader = new Preloader( {
@@ -73,7 +73,7 @@ var loader = new Preloader( {
 This function is called every time an image completes or fails.
 The `tick` object contains three fields that let you know what happened.
 
-The default is an empty function.
+onProgress is optional and defaults to an empty function.
 
 ```javascript
 {
