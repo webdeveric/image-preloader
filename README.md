@@ -20,7 +20,97 @@ loader.start().then( function( images ) {
 
 The constructor takes one argument, which is an object of settings.
 
-- **images** Array of URLs
-- **timeout** Number of milliseconds. Default: 30000
-- **beforeStart** Callback function. Default: empty function
-- **onProgress** Callback function. Default: empty function
+### images
+
+The `images` setting can be any iterable that has a `forEach` method, like Array or Set.
+
+```javascript
+var myImages = [
+  'eric.jpg',
+  'ginger.jpg'
+];
+
+var loader = new Preloader( { images: myImages } );
+```
+
+```javascript
+var myImages = new Set();
+myImages.add('eric.jpg');
+myImages.add('ginger.jpg');
+myImages.add('ginger.jpg');
+
+var loader = new Preloader( { images: myImages } );
+```
+
+### timeout
+
+Number of milliseconds. The default is 30000.
+
+```javascript
+var loader = new Preloader( {
+  images: myImages,
+  timeout: 10000
+} );
+```
+
+### beforeStart
+
+The default is an empty function.
+
+```javascript
+var loader = new Preloader( {
+  images: myImages,
+  beforeStart: function() {
+    // Do some stuff here, like resetting a progress bar to zero.
+    // You can abort the preloader by returning false or by throwing an error.
+    return false;
+  }
+} );
+```
+
+### onProgress
+
+This function is called every time an image completes or fails.
+The `tick` object contains three fields that let you know what happened.
+
+The default is an empty function.
+
+```javascript
+{
+  loaded: Boolean,
+  image: Image object or null,
+  error: Error object or null
+}
+```
+
+```javascript
+var loader = new Preloader( {
+  images: myImages,
+  onProgress: function( tick, preloader ) {
+    if ( tick.loaded ) {
+      console.log( tick.image );
+    } else {
+      console.log( tick.error );
+    }
+
+    // You can set a progress bar value using preloader.percentComplete
+    var progress = document.getElementById('preload-progress');
+    progress.setAttribute('value', preloader.percentComplete );
+  }
+} );
+```
+
+## Properties
+
+### length
+
+The number of items in the `images` object.
+
+### completed
+
+The number of images that have loaded.
+
+### percentComplete
+
+This is a float between 0 and 1 that represents the percent completed.
+It may be used to set the value of a progress bar.
