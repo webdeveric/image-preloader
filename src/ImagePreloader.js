@@ -24,6 +24,16 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
 {
   return new Promise( function( resolve, reject ) {
 
+    if ( ! url ) {
+      reject( {
+        loaded: false,
+        image: null,
+        error: new Error( 'URL is required' )
+      } );
+
+      return;
+    }
+
     const img = new Image(),
           timer = setTimeout( () => {
 
@@ -36,6 +46,8 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
           }, timeout );
 
     img.onload = function() {
+
+      clearTimeout( timer );
 
       if ( this.naturalWidth > 0 && this.naturalHeight > 0 && this.complete ) {
 
@@ -55,10 +67,11 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
 
       }
 
-      clearTimeout( timer );
     };
 
     img.onerror = function() {
+
+      clearTimeout( timer );
 
       reject( {
         loaded: false,
@@ -66,7 +79,6 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
         error: new Error( `${this.src} could not be loaded` )
       } );
 
-      clearTimeout( timer );
     };
 
     img.src = url;
