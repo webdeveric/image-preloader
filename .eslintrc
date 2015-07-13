@@ -10,6 +10,7 @@
   "rules": {
     "strict": 0,
     "quotes": [ 1, "single" ],
-    "no-multi-spaces": 0
+    "no-multi-spaces": 0,
+    "space-unary-ops": 0
   }
 }
