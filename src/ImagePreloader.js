@@ -22,6 +22,10 @@ export function prefetch( url )
 
 export function loadImage( url, timeout = DEFAULT_TIMEOUT )
 {
+  function clearEvents( img ) {
+    img.onload = img.onabort = img.onerror = null;
+  }
+
   return new Promise( function( resolve, reject ) {
 
     if ( ! url ) {
@@ -49,6 +53,8 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
 
       clearTimeout( timer );
 
+      clearEvents( this );
+
       if ( this.naturalWidth > 0 && this.naturalHeight > 0 && this.complete ) {
 
         resolve( {
@@ -69,9 +75,11 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
 
     };
 
-    img.onerror = function() {
+    img.onerror = img.onabort = function() {
 
       clearTimeout( timer );
+
+      clearEvents( this );
 
       reject( {
         loaded: false,
