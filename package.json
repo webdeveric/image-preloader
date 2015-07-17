@@ -1,6 +1,6 @@
 {
   "name": "image-preloader",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Preload images using promises",
   "main": "lib/ImagePreloader.js",
   "files": [
