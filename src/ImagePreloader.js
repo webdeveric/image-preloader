@@ -108,6 +108,10 @@ export class Preloader
     this.onProgress  = onProgress;
 
     this.numberCompleted = 0;
+
+    if ( typeof Promise === 'undefined' ) {
+      console.error('Promise is undefined. Please provide a polyfill.');
+    }
   }
 
   load( url )
@@ -126,33 +130,42 @@ export class Preloader
 
   start()
   {
-    try {
+    if ( typeof Promise !== 'undefined' ) {
 
-      if ( this.beforeStart( this ) === false ) {
-        throw new Error('Preloader start canceled by beforeStart');
+      try {
+
+        if ( this.beforeStart( this ) === false ) {
+          throw new Error('Preloader start canceled by beforeStart');
+        }
+
+        this.numberCompleted = 0;
+
+        if ( this.images && typeof this.images.forEach === 'function' ) {
+
+          let promises = [];
+
+          this.images.forEach( ( url ) => {
+            promises[ promises.length ] = this.load( url );
+          });
+
+          return Promise.all( promises );
+
+        }
+
+        throw new Error('Unable to start. Does the images object have a forEach method?');
+
+      } catch ( error ) {
+
+        return Promise.reject( error );
+
       }
-
-      this.numberCompleted = 0;
-
-      if ( this.images && typeof this.images.forEach === 'function' ) {
-
-        let promises = [];
-
-        this.images.forEach( ( url ) => {
-          promises[ promises.length ] = this.load( url );
-        });
-
-        return Promise.all( promises );
-
-      }
-
-      throw new Error('Unable to start. Does the images object have a forEach method?');
-
-    } catch ( error ) {
-
-      return Promise.reject( error );
 
     }
+
+    return {
+      then: noop,
+      catch: noop
+    };
   }
 
   get completed()
