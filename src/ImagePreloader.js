@@ -2,33 +2,17 @@ const DEFAULT_TIMEOUT = 30000;
 
 function noop(){}
 
-export function prefetch( url )
+function clearEvents( img )
 {
-  const head = document.getElementsByTagName('head')[0];
-
-  if ( head ) {
-    const link = document.createElement('link');
-
-    link.setAttribute('rel', 'prefetch');
-    link.setAttribute('href', url );
-
-    head.appendChild( link );
-
-    return link;
-  }
-
-  return false;
+  img.onload = img.onabort = img.onerror = null;
 }
 
-export function loadImage( url, timeout = DEFAULT_TIMEOUT )
+function loadImage( url, timeout = DEFAULT_TIMEOUT )
 {
-  function clearEvents( img ) {
-    img.onload = img.onabort = img.onerror = null;
-  }
-
-  return new Promise( function( resolve, reject ) {
+  return new Promise( ( resolve, reject ) => {
 
     if ( ! url ) {
+
       reject( {
         loaded: false,
         image: null,
@@ -38,16 +22,17 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
       return;
     }
 
-    const img = new Image(),
-          timer = setTimeout( () => {
+    const img = new Image();
 
-            reject( {
-              loaded: false,
-              image: null,
-              error: new Error( `${url} timed out` )
-            } );
+    let timer = setTimeout( () => {
 
-          }, timeout );
+      reject( {
+        loaded: false,
+        image: null,
+        error: new Error( `${url} timed out` )
+      } );
+
+    }, timeout );
 
     img.onload = function() {
 
@@ -93,7 +78,7 @@ export function loadImage( url, timeout = DEFAULT_TIMEOUT )
   });
 }
 
-export class Preloader
+export default class Preloader
 {
   constructor( {
     images      = [],
@@ -124,7 +109,9 @@ export class Preloader
   progress( tick )
   {
     ++this.numberCompleted;
+
     this.onProgress( tick, this );
+
     return tick;
   }
 
@@ -144,7 +131,7 @@ export class Preloader
 
           let promises = [];
 
-          this.images.forEach( ( url ) => {
+          this.images.forEach( url => {
             promises[ promises.length ] = this.load( url );
           });
 
@@ -181,7 +168,6 @@ export class Preloader
       if ( images.length !== void 0 ) {
         return images.length;
       } else if ( images.size !== void 0 ) {
-        // size is a property on Set objects.
         return images.size;
       }
     }
@@ -199,5 +185,3 @@ export class Preloader
     return this.length === 0 ? 0 : this.numberCompleted / this.length;
   }
 }
-
-export default Preloader;
