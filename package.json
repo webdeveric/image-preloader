@@ -16,8 +16,8 @@
   ],
   "scripts": {
     "lint": "eslint --fix src",
-    "dev": "npm run lint && babel src --out-dir lib --modules umd --watch --source-maps inline",
-    "build": "babel src --out-dir lib --compact --modules umd",
+    "dev": "npm run lint && babel src --out-dir lib --watch --source-maps inline",
+    "build": "babel src --out-dir lib --compact",
     "postinstall": "npm run build"
   },
   "repository": {
