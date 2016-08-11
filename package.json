@@ -1,6 +1,6 @@
 {
   "name": "image-preloader",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Preload images using promises",
   "private": true,
   "author": {
@@ -15,7 +15,8 @@
     ".babelrc"
   ],
   "scripts": {
-    "lint": "eslint --fix src",
+    "lint": "eslint --fix src && eslint -c test/.eslintrc --fix test",
+    "test": "karma start test/karma.config.js",
     "dev": "npm run lint && babel src --out-dir lib --watch --source-maps inline",
     "build": "babel src --out-dir lib --compact",
     "postinstall": "npm run build"
@@ -40,6 +41,18 @@
   },
   "devDependencies": {
     "babel-eslint": "^6.0",
-    "eslint": "^3.0"
+    "babel-loader": "^6.0",
+    "eslint": "^3.0",
+    "eslint-loader": "^1.0",
+    "jasmine-core": "^2.0",
+    "karma": "^1.0",
+    "karma-babel-preprocessor": "^6.0",
+    "karma-chrome-launcher": "^1.0",
+    "karma-firefox-launcher": "^1.0",
+    "karma-jasmine": "^1.0",
+    "karma-phantomjs-launcher": "^1.0",
+    "karma-safari-launcher": "^1.0",
+    "karma-webpack": "^1.0",
+    "webpack": "^1.0"
   }
 }
