@@ -40,7 +40,7 @@ function loadImage( url, timeout = DEFAULT_TIMEOUT )
 
       clearEvents( this );
 
-      if ( this.naturalWidth > 0 && this.naturalHeight > 0 && this.complete ) {
+      if ( this.naturalWidth && this.naturalHeight && this.complete ) {
 
         resolve( {
           loaded: true,
@@ -85,7 +85,7 @@ export default class Preloader
     timeout     = DEFAULT_TIMEOUT,
     beforeStart = noop,
     onProgress  = noop
-  } )
+  } = {} )
   {
     this.images      = images;
     this.timeout     = timeout;
@@ -162,22 +162,7 @@ export default class Preloader
 
   get length()
   {
-    if ( this.images ) {
-      let images = this.images;
-
-      if ( images.length !== void 0 ) {
-        return images.length;
-      } else if ( images.size !== void 0 ) {
-        return images.size;
-      }
-    }
-
-    return 0;
-  }
-
-  get total()
-  {
-    return this.length;
+    return this.images.length || this.images.size || 0;
   }
 
   get percentComplete()
