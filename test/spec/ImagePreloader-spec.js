@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import Preloader from '../../src/ImagePreloader';
 
-describe('ImagePreloader', function() {
+describe('ImagePreloader', () => {
 
   const images = [
     '/images/Ginger.jpg',
@@ -15,7 +15,7 @@ describe('ImagePreloader', function() {
 
   const looksLikeTickObject = {
     asymmetricMatch: tick => {
-      const props = [ 'loaded', 'image', 'error' ];
+      const props = [ 'url', 'loaded', 'image', 'error' ];
 
       for ( let i = 0, l = props.length ; i < l ; ++i ) {
         if ( ! tick.hasOwnProperty( props[ i ] ) ) {
@@ -27,9 +27,9 @@ describe('ImagePreloader', function() {
     }
   };
 
-  describe('constructor', function() {
+  describe('constructor', () => {
 
-    it('should use default constructor arguments', function() {
+    it('should use default constructor arguments', () => {
       let preloader = new Preloader();
 
       expect( Array.isArray( preloader.images ) ).toBe( true );
@@ -38,13 +38,13 @@ describe('ImagePreloader', function() {
       expect( preloader.onProgress ).toEqual( jasmine.any( Function ) );
     });
 
-    it('should accept an Array of images', function() {
+    it('should accept an Array of images', () => {
       let preloader = new Preloader( { images } );
 
       expect( Array.isArray( preloader.images ) ).toBe( true );
     });
 
-    it('should accept a Set of images', function() {
+    it('should accept a Set of images', () => {
       let preloader = new Preloader( {
         images: new Set( images )
       });
@@ -54,12 +54,12 @@ describe('ImagePreloader', function() {
 
   });
 
-  it('should load an image', function(done) {
+  it('should load an image', done => {
     let preloader = new Preloader();
 
     preloader.load( images[0] ).then( tick => {
-
-      expect(tick).toEqual(jasmine.objectContaining({
+      expect(tick).toEqual( jasmine.objectContaining({
+        url: images[0],
         loaded: true,
         image: jasmine.any( Image ),
         error: null
@@ -69,11 +69,11 @@ describe('ImagePreloader', function() {
     }, done.fail );
   });
 
-  it('should fail when not loading an image', function(done) {
-    let preloader = new Preloader( { images: notImages } );
+  it('should fail when not loading an image', done => {
+    let preloader = new Preloader();
 
     preloader.load( notImages[0] ).then( tick => {
-
+      expect( tick.url ).toBe( notImages[0] );
       expect( tick.loaded ).toBe( false );
       expect( tick.image ).toBeNull();
       expect( tick.error ).toEqual( jasmine.any( Error ) );
@@ -82,8 +82,8 @@ describe('ImagePreloader', function() {
     }, done.fail );
   });
 
-  it('should load multiple images', function(done) {
-    let preloader = new Preloader({ images });
+  it('should load multiple images', done => {
+    let preloader = new Preloader( { images } );
 
     preloader.start().then( ticks => {
       ticks.forEach( tick => {
@@ -98,9 +98,9 @@ describe('ImagePreloader', function() {
     }, done.fail );
   });
 
-  describe('beforeStart callback', function() {
+  describe('beforeStart callback', () => {
 
-    it('should be able to prevent loading with beforeStart', function(done) {
+    it('should be able to prevent loading with beforeStart', done => {
       let beforeStart = jasmine.createSpy('beforeStart').and.returnValue(false);
 
       let preloader = new Preloader( { beforeStart } );
@@ -116,9 +116,9 @@ describe('ImagePreloader', function() {
 
   });
 
-  describe('onProgress callback', function() {
+  describe('onProgress callback', () => {
 
-    it('should call onProgress', function(done) {
+    it('should call onProgress', done => {
       let onProgress = jasmine.createSpy('onProgress');
 
       let preloader = new Preloader( { images, onProgress } );
@@ -130,7 +130,7 @@ describe('ImagePreloader', function() {
       }, done.fail );
     });
 
-    it('should pass a tick and preloader objects to onProgress', function(done) {
+    it('should pass a tick and preloader objects to onProgress', done => {
       let onProgress = jasmine.createSpy('onProgress');
 
       let preloader = new Preloader( { images, onProgress } );
@@ -144,9 +144,9 @@ describe('ImagePreloader', function() {
 
   });
 
-  describe('.length', function() {
+  describe('.length', () => {
 
-    it('should return the size of the images property', function() {
+    it('should return the size of the images property', () => {
       let imagesArray = new Preloader( { images } );
 
       let imagesSet = new Preloader( {
@@ -159,14 +159,13 @@ describe('ImagePreloader', function() {
 
   });
 
-  describe('.completed', function() {
+  describe('.completed', () => {
 
-    it('should return the number of completed ticks', function(done) {
-
+    it('should return the number of completed ticks', done => {
       let preloader = new Preloader( { images } );
 
       preloader.start().then( () => {
-        expect(preloader.completed).toEqual(images.length);
+        expect(preloader.completed).toBe( images.length );
 
         done();
       }, done.fail );
@@ -175,13 +174,13 @@ describe('ImagePreloader', function() {
 
   });
 
-  describe('.percentComplete', function() {
+  describe('.percentComplete', () => {
 
-    it('should return a float between 0 and 1', function(done) {
+    it('should return a float between 0 and 1', done => {
       let preloader = new Preloader( {
         images,
         onProgress: ( tick, loader ) => {
-          expect( loader.percentComplete >= 0 && loader.percentComplete <= 1).toBe( true );
+          expect( loader.percentComplete >= 0 && loader.percentComplete <= 1 ).toBe( true );
         }
       });
 

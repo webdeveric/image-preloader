@@ -14,6 +14,7 @@ function loadImage( url, timeout = DEFAULT_TIMEOUT )
     if ( ! url ) {
 
       reject( {
+        url,
         loaded: false,
         image: null,
         error: new Error( 'URL is required' )
@@ -27,6 +28,7 @@ function loadImage( url, timeout = DEFAULT_TIMEOUT )
     let timer = setTimeout( () => {
 
       reject( {
+        url,
         loaded: false,
         image: null,
         error: new Error( `${url} timed out` )
@@ -43,6 +45,7 @@ function loadImage( url, timeout = DEFAULT_TIMEOUT )
       if ( this.naturalWidth && this.naturalHeight && this.complete ) {
 
         resolve( {
+          url,
           loaded: true,
           image: this,
           error: null
@@ -51,6 +54,7 @@ function loadImage( url, timeout = DEFAULT_TIMEOUT )
       } else {
 
         reject( {
+          url,
           loaded: true,
           image: this,
           error: new Error( `${this.src} loaded but is broken` )
@@ -67,6 +71,7 @@ function loadImage( url, timeout = DEFAULT_TIMEOUT )
       clearEvents( this );
 
       reject( {
+        url,
         loaded: false,
         image: null,
         error: new Error( `${this.src} could not be loaded` )
