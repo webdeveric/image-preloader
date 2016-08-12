@@ -11,12 +11,17 @@ Preloader uses [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScrip
 ## Example Usage
 
 ```javascript
-var loader = new Preloader( { images: [] } );
+import Preloader from 'image-preloader';
 
-loader.start().then( function( results ) {
+let loader = new Preloader( { images: [
+  'http://placekitten.com/200/200',
+  'http://placekitten.com/400/400',
+] } );
+
+loader.start().then( results => {
   console.log( results );
-}, function( error ) {
-  console.log( error );
+}, error => {
+  console.error( error );
 });
 ```
 
@@ -29,21 +34,21 @@ The constructor takes one argument, which is an object of settings.
 The `images` setting can be any iterable that has a `forEach` method, like Array or Set.
 
 ```javascript
-var myImages = [
+let myImages = [
   'eric.jpg',
   'ginger.jpg'
 ];
 
-var loader = new Preloader( { images: myImages } );
+let loader = new Preloader( { images: myImages } );
 ```
 
 ```javascript
-var myImages = new Set();
+let myImages = new Set();
 myImages.add('eric.jpg');
 myImages.add('ginger.jpg');
 myImages.add('ginger.jpg');
 
-var loader = new Preloader( { images: myImages } );
+let loader = new Preloader( { images: myImages } );
 ```
 
 ### timeout
@@ -51,7 +56,7 @@ var loader = new Preloader( { images: myImages } );
 Number of milliseconds. The default is 30000.
 
 ```javascript
-var loader = new Preloader( {
+let loader = new Preloader( {
   images: myImages,
   timeout: 10000
 } );
@@ -62,7 +67,7 @@ var loader = new Preloader( {
 `beforeStart` is optional and defaults to an empty function.
 
 ```javascript
-var loader = new Preloader( {
+let loader = new Preloader( {
   images: myImages,
   beforeStart: function() {
     // Do some stuff here, like resetting a progress bar to zero.
@@ -86,6 +91,7 @@ The `tick` object contains three fields that let you know what happened.
 
 ```javascript
 {
+  url: String,
   loaded: Boolean,
   image: Image object or null,
   error: Error object or null
@@ -95,7 +101,7 @@ The `tick` object contains three fields that let you know what happened.
 **Example: Setting progress bar**
 
 ```javascript
-var loader = new Preloader( {
+let loader = new Preloader( {
   images: myImages,
   onProgress: function( tick, preloader ) {
     if ( tick.loaded ) {
@@ -105,7 +111,7 @@ var loader = new Preloader( {
     }
 
     // You can set a progress bar value using preloader.percentComplete
-    var progress = document.getElementById('preload-progress');
+    let progress = document.getElementById('preload-progress');
     progress.setAttribute('value', preloader.percentComplete );
   }
 } );
