@@ -1,8 +1,8 @@
 {
-  "name": "image-preloader",
+  "name": "@webdeveric/image-preloader",
   "version": "0.4.0",
   "description": "Preload images using promises",
-  "private": true,
+  "license": "GPL-3.0",
   "author": {
     "name": "Eric King",
     "email": "eric@webdeveric.com",
@@ -15,11 +15,11 @@
     ".babelrc"
   ],
   "scripts": {
-    "lint": "eslint --fix src && eslint -c test/.eslintrc --fix test",
+    "lint": "eslint -c eslint-config-webdeveric --fix src && eslint -c test/.eslintrc --fix test",
     "test": "karma start test/karma.config.js",
     "dev": "npm run lint && babel src --out-dir lib --watch --source-maps inline",
-    "build": "babel src --out-dir lib --compact",
-    "postinstall": "npm run build"
+    "build": "npm run lint && babel src --out-dir lib --compact",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -29,27 +29,28 @@
     "url": "https://github.com/webdeveric/image-preloader/issues"
   },
   "keywords": [
-    "loader",
     "image",
     "preload",
-    "prefetch",
+    "preloader",
+    "progress",
     "promise"
   ],
   "dependencies": {
-    "babel-cli": "^6.0",
-    "babel-core": "^6.0",
-    "babel-preset-es2015": "^6.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.0",
+    "babel-core": "^6.0",
     "babel-eslint": "^6.0",
     "babel-loader": "^6.0",
     "babel-polyfill": "^6.0",
+    "babel-preset-es2015": "^6.0",
     "eslint": "^3.0",
+    "eslint-config-webdeveric": "^0.1",
     "eslint-loader": "^1.0",
     "jasmine-core": "^2.0",
     "karma": "^1.0",
     "karma-babel-preprocessor": "^6.0",
-    "karma-chrome-launcher": "^1.0",
+    "karma-chrome-launcher": "^2.0",
     "karma-firefox-launcher": "^1.0",
     "karma-jasmine": "^1.0",
     "karma-phantomjs-launcher": "^1.0",
