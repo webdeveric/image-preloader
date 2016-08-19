@@ -1,7 +1,6 @@
 {
-  "extends": "../.eslintrc",
+  "extends": "webdeveric",
   "env": {
-    "jasmine": true,
-    "node": true
+    "jasmine": true
   }
 }
