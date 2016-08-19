@@ -1,6 +1,7 @@
 # Image Preloader
 
-[![dependencies Status](https://david-dm.org/webdeveric/image-preloader/status.svg)](https://david-dm.org/webdeveric/image-preloader) [![devDependencies Status](https://david-dm.org/webdeveric/image-preloader/dev-status.svg)](https://david-dm.org/webdeveric/image-preloader?type=dev)
+[![dependencies Status](https://david-dm.org/webdeveric/image-preloader/status.svg)](https://david-dm.org/webdeveric/image-preloader)
+[![devDependencies Status](https://david-dm.org/webdeveric/image-preloader/dev-status.svg)](https://david-dm.org/webdeveric/image-preloader?type=dev)
 
 Preload images using promises.
 
