@@ -1,5 +1,3 @@
-const DEFAULT_TIMEOUT = 30000;
-
 function noop(){}
 
 function clearEvents( img )
@@ -7,34 +5,48 @@ function clearEvents( img )
   img.onload = img.onabort = img.onerror = null;
 }
 
-function loadImage( url, timeout = DEFAULT_TIMEOUT )
+function getImageSettings( img, defaultTimeout )
+{
+  const t = typeof img;
+
+  let src = t === 'string' ? img : t === 'object' && img.src ? img.src : '';
+  let srcset = img.srcset || '';
+  let timeout = img.timeout || defaultTimeout;
+  let crossOrigin = img.crossOrigin || 'anonymous';
+
+  return { src, srcset, timeout, crossOrigin };
+}
+
+function loadImage( settings )
 {
   return new Promise( ( resolve, reject ) => {
 
-    if ( ! url ) {
+    const { src, srcset, crossOrigin, timeout } = settings;
+
+    if ( ! src && ! srcset ) {
 
       reject( {
-        url,
+        settings,
         loaded: false,
         image: null,
-        error: new Error( 'URL is required' )
+        error: new Error( 'Image source is required' )
       } );
 
       return;
     }
 
-    const img = new Image();
-
     let timer = setTimeout( () => {
 
       reject( {
-        url,
+        settings,
         loaded: false,
         image: null,
-        error: new Error( `${url} timed out` )
+        error: new Error( 'Image timed out' )
       } );
 
     }, timeout );
+
+    const img = new Image();
 
     img.onload = function() {
 
@@ -45,7 +57,7 @@ function loadImage( url, timeout = DEFAULT_TIMEOUT )
       if ( this.naturalWidth && this.naturalHeight && this.complete ) {
 
         resolve( {
-          url,
+          settings,
           loaded: true,
           image: this,
           error: null
@@ -54,10 +66,10 @@ function loadImage( url, timeout = DEFAULT_TIMEOUT )
       } else {
 
         reject( {
-          url,
+          settings,
           loaded: true,
           image: this,
-          error: new Error( `${this.src} loaded but is broken` )
+          error: new Error( 'Image loaded but is broken' )
         } );
 
       }
@@ -71,15 +83,24 @@ function loadImage( url, timeout = DEFAULT_TIMEOUT )
       clearEvents( this );
 
       reject( {
-        url,
+        settings,
         loaded: false,
         image: null,
-        error: new Error( `${this.src} could not be loaded` )
+        error: new Error( 'Image could not be loaded' )
       } );
 
     };
 
-    img.src = url;
+    img.crossOrigin = crossOrigin;
+
+    if ( srcset ) {
+      img.srcset = srcset;
+    }
+
+    if ( src ) {
+      img.src = src;
+    }
+
   });
 }
 
@@ -87,7 +108,7 @@ export default class Preloader
 {
   constructor( {
     images      = [],
-    timeout     = DEFAULT_TIMEOUT,
+    timeout     = 30000,
     beforeStart = noop,
     onProgress  = noop
   } = {} )
@@ -99,16 +120,16 @@ export default class Preloader
 
     this.numberCompleted = 0;
 
-    if ( typeof Promise === 'undefined' ) {
-      console.error('Promise is undefined. Please provide a polyfill.');
+    if ( ! Promise ) {
+      throw new Error('Promise is undefined. Please provide a polyfill.');
     }
   }
 
-  load( url )
+  load( img )
   {
     const p = this.progress.bind( this );
 
-    return loadImage( url, this.timeout ).then( p, p );
+    return loadImage( getImageSettings( img, this.timeout ) ).then( p, p );
   }
 
   progress( tick )
@@ -122,42 +143,33 @@ export default class Preloader
 
   start()
   {
-    if ( typeof Promise !== 'undefined' ) {
+    try {
 
-      try {
+      if ( this.beforeStart( this ) === false ) {
+        throw new Error('Preloader start canceled by beforeStart');
+      }
 
-        if ( this.beforeStart( this ) === false ) {
-          throw new Error('Preloader start canceled by beforeStart');
-        }
+      this.numberCompleted = 0;
 
-        this.numberCompleted = 0;
+      if ( this.images && typeof this.images.forEach === 'function' ) {
 
-        if ( this.images && typeof this.images.forEach === 'function' ) {
+        let promises = [];
 
-          let promises = [];
+        this.images.forEach( img => {
+          promises[ promises.length ] = this.load( img );
+        });
 
-          this.images.forEach( url => {
-            promises[ promises.length ] = this.load( url );
-          });
-
-          return Promise.all( promises );
-
-        }
-
-        throw new Error('Unable to start. Does the images object have a forEach method?');
-
-      } catch ( error ) {
-
-        return Promise.reject( error );
+        return Promise.all( promises );
 
       }
 
-    }
+      throw new Error('Unable to start. Does the images object have a forEach method?');
 
-    return {
-      then: noop,
-      catch: noop
-    };
+    } catch ( error ) {
+
+      return Promise.reject( error );
+
+    }
   }
 
   get completed()
@@ -172,6 +184,8 @@ export default class Preloader
 
   get percentComplete()
   {
-    return this.length === 0 ? 0 : this.numberCompleted / this.length;
+    const length = this.length;
+
+    return length ? this.numberCompleted / length : 0;
   }
 }

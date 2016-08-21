@@ -15,10 +15,10 @@ describe('ImagePreloader', () => {
 
   const looksLikeTickObject = {
     asymmetricMatch: tick => {
-      const props = [ 'url', 'loaded', 'image', 'error' ];
+      const props = [ 'settings', 'loaded', 'image', 'error' ];
 
-      for ( let i = 0, l = props.length ; i < l ; ++i ) {
-        if ( ! tick.hasOwnProperty( props[ i ] ) ) {
+      for ( const prop of props ) {
+        if ( ! tick.hasOwnProperty( prop ) ) {
           return false;
         }
       }
@@ -54,48 +54,131 @@ describe('ImagePreloader', () => {
 
   });
 
-  it('should load an image', done => {
-    let preloader = new Preloader();
+  describe('.load()', () => {
 
-    preloader.load( images[0] ).then( tick => {
-      expect(tick).toEqual( jasmine.objectContaining({
-        url: images[0],
-        loaded: true,
-        image: jasmine.any( Image ),
-        error: null
-      }));
+    it('should load an image', done => {
+      let preloader = new Preloader();
 
-      done();
-    }, done.fail );
-  });
-
-  it('should fail when not loading an image', done => {
-    let preloader = new Preloader();
-
-    preloader.load( notImages[0] ).then( tick => {
-      expect( tick.url ).toBe( notImages[0] );
-      expect( tick.loaded ).toBe( false );
-      expect( tick.image ).toBeNull();
-      expect( tick.error ).toEqual( jasmine.any( Error ) );
-
-      done();
-    }, done.fail );
-  });
-
-  it('should load multiple images', done => {
-    let preloader = new Preloader( { images } );
-
-    preloader.start().then( ticks => {
-      ticks.forEach( tick => {
-        expect(tick).toEqual(jasmine.objectContaining({
+      preloader.load( images[0] ).then( tick => {
+        expect(tick).toEqual( jasmine.objectContaining({
+          settings: jasmine.any( Object ),
           loaded: true,
           image: jasmine.any( Image ),
           error: null
         }));
+
+        done();
+      }, done.fail );
+    });
+
+    it('should fail when not loading an image', done => {
+      let preloader = new Preloader();
+
+      preloader.load( notImages[0] ).then( tick => {
+        expect( tick.settings.src ).toBe( notImages[0] );
+        expect( tick.loaded ).toBe( false );
+        expect( tick.image ).toBeNull();
+        expect( tick.error ).toEqual( jasmine.any( Error ) );
+
+        done();
+      }, done.fail );
+    });
+
+  });
+
+  describe('.start()', () => {
+
+    it('should load multiple images', done => {
+      let preloader = new Preloader( { images } );
+
+      preloader.start().then( ticks => {
+        ticks.forEach( tick => {
+          expect(tick).toEqual(jasmine.objectContaining({
+            loaded: true,
+            image: jasmine.any( Image ),
+            error: null
+          }));
+        });
+
+        done();
+      }, done.fail );
+    });
+
+    it('should throw an error', done => {
+      let preloader = new Preloader( { images: false });
+
+      preloader.start().then( done.fail, error => {
+        expect(error).toEqual( jasmine.any( Error ) );
+
+        done();
+      });
+    });
+
+  });
+
+  describe('images setting', () => {
+
+    it('should accept objects and strings', done => {
+
+      let preloader = new Preloader( {
+        images: [
+          images[ 0 ],
+          { src: images[ 0 ] },
+          { srcset: `${images[ 0 ]} 1x, ${images[ 1 ]} 2x` },
+        ],
+        timeout: jasmine.DEFAULT_TIMEOUT_INTERVAL / 2
+      } );
+
+      preloader.start().then( ticks => {
+        ticks.forEach( tick => {
+          expect(tick).toEqual( looksLikeTickObject );
+        });
+
+        done();
+      }, done.fail );
+
+    });
+
+    describe('crossOrigin', () => {
+
+      it('should default to anonymous', done => {
+
+        let preloader = new Preloader( { images } );
+
+        preloader.start().then( ticks => {
+          ticks.forEach( tick => {
+            expect(tick.settings.crossOrigin).toEqual( 'anonymous' );
+          });
+
+          done();
+        }, done.fail );
+
       });
 
-      done();
-    }, done.fail );
+      it('should use credentials', done => {
+
+        let preloader = new Preloader( {
+          images: [
+            {
+              src: images[ 0 ],
+              crossOrigin: 'use-credentials'
+            }
+          ]
+        } );
+
+        preloader.start().then( ticks => {
+          ticks.forEach( tick => {
+            expect(tick.settings.crossOrigin).toEqual( 'use-credentials' );
+
+            expect(tick.settings.crossOrigin).toEqual( tick.image.crossOrigin );
+          });
+
+          done();
+        }, done.fail );
+
+      });
+
+    });
   });
 
   describe('beforeStart callback', () => {
