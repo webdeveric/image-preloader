@@ -5,6 +5,12 @@
 
 Preload images using promises.
 
+## Installation
+
+```shell
+npm install @webdeveric/image-preloader --save
+```
+
 ## Prerequisites
 
 Preloader uses [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), which are a part of ECMAScript 2015 (ES6), so you'll need a polyfill for older browsers.
