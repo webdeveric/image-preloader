@@ -9,10 +9,10 @@
     "url": "http://webdeveric.com/"
   },
   "main": "lib/ImagePreloader.js",
+  "jsnext:main": "src/ImagePreloader.js",
   "files": [
     "lib/",
-    "src/",
-    ".babelrc"
+    "src/"
   ],
   "scripts": {
     "lint": "eslint -c eslint-config-webdeveric --fix src && eslint -c test/.eslintrc --fix test",
@@ -33,7 +33,9 @@
     "preload",
     "preloader",
     "progress",
-    "promise"
+    "promise",
+    "srcset",
+    "crossorigin"
   ],
   "dependencies": {
   },
