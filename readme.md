@@ -9,10 +9,10 @@ Preload images using promises.
 
 Preloader uses [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), which are a part of ECMAScript 2015 (ES6), so you'll need a polyfill for older browsers.
 
-## Example Usage
+## Example Usage (es2015)
 
 ```javascript
-import Preloader from 'image-preloader';
+import Preloader from '@webdeveric/image-preloader';
 
 let loader = new Preloader( { images: [
   'http://placekitten.com/200/200',
@@ -85,14 +85,14 @@ let loader = new Preloader( {
 This function is called every time an image completes or fails.
 
 `onProgress` receives two arguments, `tick` and `preloader`.
-The `tick` object contains three fields that let you know what happened.
+The `tick` object contains four fields that let you know what happened.
 `preloader` is the `Preloader` instance, which you can use to check the percent complete.
 
 **tick object**
 
 ```javascript
 {
-  url: String,
+  settings: Object,
   loaded: Boolean,
   image: Image object or null,
   error: Error object or null
