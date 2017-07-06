@@ -141,13 +141,12 @@ describe('ImagePreloader', () => {
 
     describe('crossOrigin', () => {
 
-      it('should default to anonymous', done => {
-
+      it('should default to empty string', done => {
         let preloader = new Preloader( { images } );
 
         preloader.start().then( ticks => {
           ticks.forEach( tick => {
-            expect(tick.settings.crossOrigin).toEqual( 'anonymous' );
+            expect(tick.settings.crossOrigin).toEqual('');
           });
 
           done();

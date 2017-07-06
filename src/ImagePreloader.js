@@ -12,7 +12,7 @@ function getImageSettings( img, defaultTimeout )
   let src = t === 'string' ? img : t === 'object' && img.src ? img.src : '';
   let srcset = img.srcset || '';
   let timeout = img.timeout || defaultTimeout;
-  let crossOrigin = img.crossOrigin || 'anonymous';
+  let crossOrigin = img.crossOrigin || '';
 
   return { src, srcset, timeout, crossOrigin };
 }
@@ -77,7 +77,6 @@ function loadImage( settings )
     };
 
     img.onerror = img.onabort = function() {
-
       clearTimeout( timer );
 
       clearEvents( this );
@@ -91,7 +90,9 @@ function loadImage( settings )
 
     };
 
-    img.crossOrigin = crossOrigin;
+    if ( crossOrigin ) {
+      img.crossOrigin = crossOrigin;
+    }
 
     if ( srcset ) {
       img.srcset = srcset;
