@@ -32,25 +32,27 @@ module.exports = function(config) {
 
     webpack: {
       module: {
-        preLoaders: [
+        rules: [
+          {
+            enforce: 'pre',
+            test: /\.js?$/,
+            exclude: /node_modules/,
+            use: [
+              {
+                loader: 'eslint-loader',
+                options: {
+                  configFile: 'test/.eslintrc',
+                },
+              },
+            ],
+          },
           {
             test: /\.js$/,
-            loader: 'eslint-loader',
-            exclude: /node_modules/
-          }
-        ],
-        loaders: [
-          {
-            test: /\.js/,
             loader: 'babel-loader',
-            exclude: /node_modules/
-          }
+            exclude: /node_modules/,
+          },
         ]
       },
-      eslint: {
-        configFile: 'test/.eslintrc'
-      },
-      watch: true
     },
 
     webpackServer: {

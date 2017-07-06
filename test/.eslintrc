@@ -1,6 +1,14 @@
 {
-  "extends": "webdeveric",
+  "extends": [
+    "webdeveric"
+  ],
   "env": {
     "jasmine": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true
+    }
   }
 }
